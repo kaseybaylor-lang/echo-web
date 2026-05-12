@@ -18,6 +18,23 @@ function countFillers(transcript: string): number {
   }, 0);
 }
 
+// Detect repeated 3–5 word phrases (min 2 repetitions) — signals habit loops
+function findRepeatedPhrase(transcript: string): string | null {
+  const words = transcript.toLowerCase().replace(/[^a-z\s]/g, "").trim().split(/\s+/);
+  if (words.length < 8) return null;
+  for (let len = 4; len >= 3; len--) {
+    const seen = new Map<string, number>();
+    for (let i = 0; i <= words.length - len; i++) {
+      const phrase = words.slice(i, i + len).join(" ");
+      // Skip if it's all filler words or too generic
+      if (/^(um|uh|like|you know|the|a|an|and|so|but|i|it|is|are|was)\s/.test(phrase)) continue;
+      seen.set(phrase, (seen.get(phrase) ?? 0) + 1);
+      if ((seen.get(phrase) ?? 0) >= 2) return phrase;
+    }
+  }
+  return null;
+}
+
 function evaluate(
   state: TrackingState,
   transcript: string,
@@ -38,6 +55,9 @@ function evaluate(
   const fillers = countFillers(transcript);
   if (fillers > prevFillers && fillers > 0)
     return { message: `Watch the filler words: ${fillers} so far`, severity: "warn" };
+  const repeated = findRepeatedPhrase(transcript);
+  if (repeated)
+    return { message: `You keep saying "${repeated}", try varying your phrasing`, severity: "warn" };
   if (state.eyeContactPercent >= 65)
     return { message: "Great eye contact, keep it up", severity: "good" };
   if (state.wordsPerMinute >= 100 && state.wordsPerMinute <= 160)
