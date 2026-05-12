@@ -126,6 +126,15 @@ export function useSocialTracking(): TrackingState & {
 
   // ── Init ──────────────────────────────────────────────────────────────────
   const initLandmarker = useCallback(async () => {
+    // MediaPipe's WASM module routes INFO-level logs through console.error.
+    // Suppress them for the duration of model load so the console stays clean.
+    const origError = console.error;
+    console.error = (...args: unknown[]) => {
+      const msg = typeof args[0] === "string" ? args[0] : "";
+      if (msg.startsWith("INFO:") || msg.includes("XNNPACK") || msg.includes("TensorFlow Lite")) return;
+      origError.apply(console, args);
+    };
+
     try {
       const { FaceLandmarker, FilesetResolver } = await import("@mediapipe/tasks-vision");
       const vision = await FilesetResolver.forVisionTasks(
@@ -145,6 +154,8 @@ export function useSocialTracking(): TrackingState & {
       setState((s) => ({ ...s, isInitialized: true }));
     } catch {
       setState((s) => ({ ...s, error: "Failed to load face tracking model. Check your connection." }));
+    } finally {
+      console.error = origError;
     }
   }, []);
 
@@ -203,7 +214,15 @@ export function useSocialTracking(): TrackingState & {
 
     let result: import("@mediapipe/tasks-vision").FaceLandmarkerResult | null = null;
     try {
+      // Suppress MediaPipe's WASM INFO logs that surface through console.error
+      const origError = console.error;
+      console.error = (...args: unknown[]) => {
+        const msg = typeof args[0] === "string" ? args[0] : "";
+        if (msg.startsWith("INFO:") || msg.includes("XNNPACK") || msg.includes("TensorFlow Lite")) return;
+        origError.apply(console, args);
+      };
       result = landmarker.detectForVideo(video, now);
+      console.error = origError;
     } catch {
       // WASM invariant violation — skip frame, keep loop alive
       rafRef.current = requestAnimationFrame(processFrame);
