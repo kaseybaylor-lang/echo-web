@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, Square, Eye, Activity, Gauge, Wind,
-  FileText, CheckCircle2, Mic2, AlertCircle
+  FileText, Mic2, AlertCircle
 } from "lucide-react";
 import { useSocialTracking } from "@/hooks/useSocialTracking";
 import { useLiveFeedback } from "@/hooks/useLiveFeedback";
@@ -207,7 +207,7 @@ export default function TryPage() {
               <div className="flex flex-wrap gap-2">
                 {result.fillerBreakdown.map(({ word, count }) => (
                   <span key={word} className="px-2 py-1 rounded-full bg-[#F5A623]/10 border border-[#F5A623]/20 text-xs text-[#F5A623]">
-                    "{word}" &times;{count}
+                    &quot;{word}&quot; &times;{count}
                   </span>
                 ))}
               </div>

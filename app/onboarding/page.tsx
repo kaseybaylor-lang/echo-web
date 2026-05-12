@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Mic2, ArrowLeft, ArrowRight, CheckCircle2, User, Mail, Lock,
-  Eye, Gauge, Volume2, Heart, Layers, Star, Zap, Check
+  Eye, Gauge, Heart, Layers, Star, Zap, Check
 } from "lucide-react";
 import { useSocialTracking } from "@/hooks/useSocialTracking";
 import { useAuth } from "@/hooks/useAuth";
@@ -136,7 +135,7 @@ export default function OnboardingPage() {
   };
 
   const showBack = step !== "intro";
-  const stepIndex = STEPS.indexOf(step);
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0A0A0A]">

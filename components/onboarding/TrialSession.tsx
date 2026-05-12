@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Mic, MicOff, Camera, CameraOff, Clock, CheckCircle2 } from "lucide-react";
+import { Mic, CameraOff, Clock } from "lucide-react";
 import { countFillerWords } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 

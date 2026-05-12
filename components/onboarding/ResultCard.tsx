@@ -59,7 +59,7 @@ function CompareRow({
 
 export default function ResultCard({ result, onRetry }: Props) {
   const router = useRouter();
-  const { label, color, description } = scoreGrade(result.confidenceScore);
+  const { description } = scoreGrade(result.confidenceScore);
 
   const fillerPpm = Math.round(result.fillerWordsPerMinute * 10) / 10;
 
@@ -68,7 +68,7 @@ export default function ResultCard({ result, onRetry }: Props) {
       {/* Header */}
       <div className="text-center">
         <p className="text-xs font-semibold uppercase tracking-widest text-white/35 mb-2">
-          Trial Complete — {formatDuration(result.duration)}
+          Trial Complete: {formatDuration(result.duration)}
         </p>
         <h2 className="text-2xl font-bold text-white">Your Results</h2>
       </div>
@@ -122,7 +122,7 @@ export default function ResultCard({ result, onRetry }: Props) {
                 key={word}
                 className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5A623]/10 border border-[#F5A623]/20"
               >
-                <span className="text-xs text-[#F5A623] font-medium">"{word}"</span>
+                <span className="text-xs text-[#F5A623] font-medium">&quot;{word}&quot;</span>
                 <span className="text-[10px] text-[#F5A623]/60 font-bold">×{count}</span>
               </div>
             ))}

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Calendar, Settings, List, Mic2,
-  TrendingUp, Flame, Clock, Eye, Activity, Zap, X,
+  TrendingUp, Flame, Clock, Eye, Zap, X,
   ChevronLeft, ChevronRight, AlertCircle
 } from "lucide-react";
 import ConfidenceScore from "@/components/coach/ConfidenceScore";

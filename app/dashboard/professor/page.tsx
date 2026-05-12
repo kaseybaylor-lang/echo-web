@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   GraduationCap, Eye, Mic2, Activity, Copy, Check, ExternalLink,
   ArrowLeft, Lock, RefreshCw, TrendingUp, TrendingDown, Minus,
-  Search, Users, ChevronRight, Clock
+  Search, Users, ChevronRight
 } from "lucide-react";
 import ConfidenceScore from "@/components/coach/ConfidenceScore";
 import { generateShareToken, scoreGrade, EXECUTIVE_BASELINE } from "@/lib/utils";
@@ -297,7 +297,7 @@ export default function ProfessorDashboard() {
           <div className="flex items-start gap-2 p-4 rounded-xl glass border border-white/5">
             <Lock size={12} className="text-white/25 mt-0.5 shrink-0" />
             <p className="text-[11px] text-white/30 leading-relaxed">
-              All face-tracking runs locally on the student's device. No video is stored. Share links expose metrics only, no personal data or transcript.
+              All face-tracking runs locally on the student&apos;s device. No video is stored. Share links expose metrics only, no personal data or transcript.
             </p>
           </div>
         </main>

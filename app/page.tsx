@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   Mic2, Eye, Activity, GraduationCap, ArrowRight,
-  Zap, Shield, BarChart3, Users, ChevronRight
+  Zap, Shield, Users, ChevronRight
 } from "lucide-react";
 import Navigation from "@/components/ui/Navigation";
 
