@@ -78,7 +78,7 @@ export default function Navigation() {
             <>
               {/* Signed-out state */}
               <Link
-                href="/onboarding"
+                href="/signin"
                 className="hidden md:inline text-sm text-white/50 hover:text-white transition-colors"
               >
                 Sign in

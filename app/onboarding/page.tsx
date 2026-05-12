@@ -65,12 +65,13 @@ function ProgressDots({ current }: { current: Step }) {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { signIn, signInDemo } = useAuth();
+  const { register, signInDemo } = useAuth();
 
   const [step, setStep] = useState<Step>("intro");
   const [trialResult, setTrialResult] = useState<TrialResult | null>(null);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
+  const [password, setPassword] = useState("");
   const [accountCreated, setAccountCreated] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
     feedbackStyle: "",
@@ -83,12 +84,12 @@ export default function OnboardingPage() {
   const tracking = useSocialTracking();
 
   const handleCreateAccount = useCallback(() => {
-    signIn({ name: fullName || email.split("@")[0], email, isDemo: false });
+    register(fullName || email.split("@")[0], email, password);
     setAccountCreated(true);
     setTimeout(() => {
       router.push("/dashboard");
     }, 1000);
-  }, [fullName, email, signIn, router]);
+  }, [fullName, email, password, register, router]);
 
   const handleSkip = useCallback(() => {
     signInDemo();
@@ -449,6 +450,8 @@ export default function OnboardingPage() {
                     <Lock size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
                     <input
                       type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="Create a password"
                       className="w-full pl-10 pr-4 py-3.5 rounded-xl glass border border-white/8 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#6C63FF]/50 focus:bg-white/6 transition-all"
                     />
@@ -457,7 +460,7 @@ export default function OnboardingPage() {
 
                 <button
                   onClick={handleCreateAccount}
-                  disabled={!email}
+                  disabled={!email || !password}
                   className="w-full py-4 rounded-2xl bg-[#6C63FF] hover:bg-[#7B74FF] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm transition-all hover:shadow-xl hover:shadow-[#6C63FF]/30 active:scale-[0.98]"
                 >
                   Create Free Account
@@ -469,6 +472,13 @@ export default function OnboardingPage() {
                 >
                   Skip for now
                 </button>
+
+                <p className="text-center text-sm text-white/40">
+                  Already have an account?{" "}
+                  <a href="/signin" className="text-[#6C63FF] hover:text-[#7B74FF] font-medium transition-colors">
+                    Sign in
+                  </a>
+                </p>
 
                 <div className="flex items-start gap-2 p-3 rounded-xl bg-white/3 border border-white/5">
                   <CheckCircle2 size={14} className="text-[#22D3A5] mt-0.5 shrink-0" />
