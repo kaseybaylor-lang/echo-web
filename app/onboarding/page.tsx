@@ -4,17 +4,13 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Mic2, ArrowLeft, ArrowRight, CheckCircle2, User, Mail, Lock,
-  Eye, Gauge, Heart, Layers, Star, Zap, Check
+  Eye, Gauge, Heart, Layers, Star, Check
 } from "lucide-react";
-import { useSocialTracking } from "@/hooks/useSocialTracking";
 import { useAuth } from "@/hooks/useAuth";
-import TrialSession, { TrialResult } from "@/components/onboarding/TrialSession";
-import ResultCard from "@/components/onboarding/ResultCard";
-import CoachPanel from "@/components/coach/CoachPanel";
 
-type Step = "intro" | "feedback-style" | "goals" | "profile" | "trial" | "result" | "signup";
+type Step = "intro" | "feedback-style" | "goals" | "profile" | "signup";
 
-const STEPS: Step[] = ["intro", "feedback-style", "goals", "profile", "trial", "result", "signup"];
+const STEPS: Step[] = ["intro", "feedback-style", "goals", "profile", "signup"];
 
 interface ProfileData {
   feedbackStyle: string;
@@ -68,7 +64,6 @@ export default function OnboardingPage() {
   const { register, signInDemo } = useAuth();
 
   const [step, setStep] = useState<Step>("intro");
-  const [trialResult, setTrialResult] = useState<TrialResult | null>(null);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -80,8 +75,6 @@ export default function OnboardingPage() {
     university: "",
     ageGroup: "",
   });
-
-  const tracking = useSocialTracking();
 
   const handleCreateAccount = useCallback(() => {
     register(fullName || email.split("@")[0], email, password);
@@ -105,26 +98,6 @@ export default function OnboardingPage() {
     const idx = STEPS.indexOf(step);
     if (idx > 0) setStep(STEPS[idx - 1]);
   }, [step]);
-
-  const handleStartTrial = useCallback(async () => {
-    setStep("trial");
-    await tracking.startTracking();
-  }, [tracking]);
-
-  const handleTrialComplete = useCallback(
-    (result: TrialResult) => {
-      tracking.stopTracking();
-      setTrialResult(result);
-      setStep("result");
-    },
-    [tracking]
-  );
-
-  const handleRetry = useCallback(async () => {
-    setTrialResult(null);
-    setStep("trial");
-    await tracking.startTracking();
-  }, [tracking]);
 
   const toggleGoal = (id: string) => {
     setProfile((p) => {
@@ -209,7 +182,7 @@ export default function OnboardingPage() {
         {step === "feedback-style" && (
           <div className="w-full max-w-lg mx-auto flex flex-col gap-6 fade-up">
             <div className="text-center">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Step 2 of 7</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Step 2 of 5</p>
               <h2 className="text-2xl font-bold text-white mb-2">How do you prefer to receive feedback?</h2>
               <p className="text-sm text-white/45">This shapes how Echo coaches you during sessions.</p>
             </div>
@@ -253,7 +226,7 @@ export default function OnboardingPage() {
         {step === "goals" && (
           <div className="w-full max-w-lg mx-auto flex flex-col gap-6 fade-up">
             <div className="text-center">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Step 3 of 7</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Step 3 of 5</p>
               <h2 className="text-2xl font-bold text-white mb-2">What do you want to improve?</h2>
               <p className="text-sm text-white/45">Pick up to 3 areas to focus on.</p>
             </div>
@@ -307,7 +280,7 @@ export default function OnboardingPage() {
         {step === "profile" && (
           <div className="w-full max-w-md mx-auto flex flex-col gap-6 fade-up">
             <div className="text-center">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Step 4 of 7</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">Step 4 of 5</p>
               <h2 className="text-2xl font-bold text-white mb-2">Tell us about yourself</h2>
               <p className="text-sm text-white/45">Helps Echo benchmark you against your peers.</p>
             </div>
@@ -357,52 +330,18 @@ export default function OnboardingPage() {
             </div>
 
             <button
-              onClick={handleStartTrial}
+              onClick={goNext}
               className="w-full py-4 rounded-2xl bg-[#6C63FF] hover:bg-[#7B74FF] text-white font-bold text-sm transition-all hover:shadow-xl hover:shadow-[#6C63FF]/30 active:scale-[0.98] flex items-center justify-center gap-2"
             >
-              <Zap size={16} />
-              Start 30-Second Trial
+              Continue
+              <ArrowRight size={16} />
             </button>
 
-            <p className="text-center text-xs text-white/25">Fields are optional. Skip by clicking Continue.</p>
+            <p className="text-center text-xs text-white/25">Fields are optional. You can skip ahead.</p>
           </div>
         )}
 
-        {/* ── Step 5: Trial ─────────────────────────────────────────────── */}
-        {step === "trial" && (
-          <div className="w-full grid md:grid-cols-[1fr_300px] gap-5 fade-up">
-            <div className="flex flex-col gap-4">
-              <div>
-                <h2 className="text-xl font-bold text-white">Your 30-Second Trial</h2>
-                <p className="text-sm text-white/45 mt-1">
-                  Speak about anything: introduce yourself, explain a concept, or pitch an idea.
-                </p>
-              </div>
-              <TrialSession
-                eyeContactPercent={tracking.eyeContactPercent}
-                confidenceScore={tracking.confidenceScore}
-                onComplete={handleTrialComplete}
-                videoRef={tracking.videoRef}
-                isTrackingActive={tracking.isTracking}
-              />
-            </div>
-
-            <div className="hidden md:block">
-              <div className="sticky top-6">
-                <CoachPanel state={tracking} />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Step 6: Result ────────────────────────────────────────────── */}
-        {step === "result" && trialResult && (
-          <div className="w-full max-w-md mx-auto">
-            <ResultCard result={trialResult} onRetry={handleRetry} onSignup={() => setStep("signup")} />
-          </div>
-        )}
-
-        {/* ── Step 7: Signup ────────────────────────────────────────────── */}
+        {/* ── Step 5: Signup ────────────────────────────────────────────── */}
         {step === "signup" && (
           <div className="w-full max-w-md mx-auto">
             {accountCreated ? (
