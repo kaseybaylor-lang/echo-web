@@ -398,7 +398,7 @@ export default function OnboardingPage() {
         {/* ── Step 6: Result ────────────────────────────────────────────── */}
         {step === "result" && trialResult && (
           <div className="w-full max-w-md mx-auto">
-            <ResultCard result={trialResult} onRetry={handleRetry} />
+            <ResultCard result={trialResult} onRetry={handleRetry} onSignup={() => setStep("signup")} />
           </div>
         )}
 

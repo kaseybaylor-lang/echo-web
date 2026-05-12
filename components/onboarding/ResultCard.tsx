@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import {
   Eye, Mic2, Activity, TrendingUp, TrendingDown, Minus,
   ArrowRight, RotateCcw, User
@@ -12,6 +11,7 @@ import ConfidenceScore from "@/components/coach/ConfidenceScore";
 interface Props {
   result: TrialResult;
   onRetry: () => void;
+  onSignup: () => void;
 }
 
 function CompareRow({
@@ -57,8 +57,7 @@ function CompareRow({
   );
 }
 
-export default function ResultCard({ result, onRetry }: Props) {
-  const router = useRouter();
+export default function ResultCard({ result, onRetry, onSignup }: Props) {
   const { description } = scoreGrade(result.confidenceScore);
 
   const fillerPpm = Math.round(result.fillerWordsPerMinute * 10) / 10;
@@ -145,7 +144,7 @@ export default function ResultCard({ result, onRetry }: Props) {
       {/* CTAs */}
       <div className="flex flex-col gap-3">
         <button
-          onClick={() => router.push("/onboarding?step=signup")}
+          onClick={onSignup}
           className="w-full py-4 rounded-2xl bg-[#6C63FF] hover:bg-[#7B74FF] text-white font-bold text-sm transition-all hover:shadow-xl hover:shadow-[#6C63FF]/30 active:scale-[0.98] flex items-center justify-center gap-2"
         >
           <User size={16} />
